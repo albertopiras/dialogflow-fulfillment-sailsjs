@@ -19,10 +19,10 @@ function getSerie(seriesId) {
 
 function createSerieResponse(agent,serieId) {
   let serie = getSerie(serieId);
-  if (serie) {
-    agent.add(`Select one of the following ${serie.series_name} models:`);
-    serie.series_models.forEach(element => {
-      agent.add(new Suggestion(element));
+  if (serie && serie.length>0) {
+    agent.add(`Select one of the following ${serie[0].model_series_name} models:`);
+    serie.forEach(element => {
+      agent.add(new Suggestion(element.model_name));
     });
   } else {
     agent.add(`Model not found - try to repeat please`);
@@ -30,12 +30,12 @@ function createSerieResponse(agent,serieId) {
   }
 }
 
-function createBMWModelResponse(agent,modelId) {
+function createBMWModelResponse(agent,modelId,imgBasePath) {
   let model = getModel(modelId);
   if (model) {
     agent.add(new Card({
       title: `${model.model_name}`,
-      imageUrl: `${model.model_img_url}`,
+      imageUrl: imgBasePath+`${model.model_img_url}`,
       text: `${model.model_description}`,
       buttonText: 'See more',
       buttonUrl: 'https://www.bmw.com'
@@ -50,6 +50,7 @@ module.exports = {
 
   search: function (request, response) {
 
+    const imgBasePath = request.baseUrl;
     const agent = new WebhookClient({ request, response });
     // console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
     // console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
@@ -58,7 +59,7 @@ module.exports = {
       console.log('Intent: Model_info --- \n');
       let requiredParam = agent.parameters.BMW_models;
       if (requiredParam) {
-        createBMWModelResponse(agent,requiredParam)
+        createBMWModelResponse(agent,requiredParam, imgBasePath)
       } else {
         agent.add(`Webhook : Select a BMW model please`);
       }
