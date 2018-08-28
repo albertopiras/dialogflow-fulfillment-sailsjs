@@ -1,22 +1,11 @@
-var chance = require('chance').Chance();
+
 var _ = require('lodash');
+const { dialogflow } = require('actions-on-google');
 
+const { WebhookClient, Payload } = require('dialogflow-fulfillment');
+const { Card, Suggestion,Text } = require('dialogflow-fulfillment');
+const { Carousel, BasicCard,List, Image, DialogflowConversation, BaseApp } = require('actions-on-google');
 
-function createCard(model) {
-  return {
-    "card": {
-      "title": model.model_name,
-      "subtitle": model.model_series_name,
-      "imageUri": model.model_img_url,
-      "buttons": [
-        {
-          "text": "see more on",
-          "postback": "https://www.bmw.com/en/bmw-models.html"
-        }
-      ]
-    }
-  }
-}
 
 function getModel(modelId) {
   let model = ModelsService.getModel(modelId);
@@ -28,71 +17,76 @@ function getSerie(seriesId) {
   return series;
 }
 
-function createSerieResponse(selectedSeries) {
-  let series = getSerie(selectedSeries);
-  let response = {
-    "fulfillmentText": "Series not found - try to repeat please"
-  };
-    
-  if (series) {
-    response = {
-      "fulfillmentText": "you selected " + series.series_name + ".These are availables models: " + series.series_models.toString()
-    }
+function createSerieResponse(agent,serieId) {
+  let serie = getSerie(serieId);
+  if (serie) {
+    agent.add(`Select one of the following ${serie.series_name} models:`);
+    serie.series_models.forEach(element => {
+      agent.add(new Suggestion(element));
+    });
+  } else {
+    agent.add(`Model not found - try to repeat please`);
+
   }
-  return response;
 }
 
-function createModelResponse(modelId) {
-
+function createBMWModelResponse(agent,modelId) {
   let model = getModel(modelId);
-  let response = {
-    "fulfillmentText": "Model not found - try to repeat please"
-  };
-
   if (model) {
-    response = {
-  "fulfillmentText": "This is a text response",
-        "fulfillmentMessages": [
-          createCard(model)
-        ]
-    }
+    agent.add(new Card({
+      title: `${model.model_name}`,
+      imageUrl: `${model.model_img_url}`,
+      text: `${model.model_description}`,
+      buttonText: 'See more',
+      buttonUrl: 'https://www.bmw.com'
+    })
+    );
+  } else {
+    agent.add(`Model not found - try to repeat please`);
   }
-
-  return response;
 }
+
 module.exports = {
 
-  search: function (req, res) {
+  search: function (request, response) {
 
-    var selectedModel = req.body.queryResult.parameters.BMW_models;
-    var selectedSeries = req.body.queryResult.parameters.BMW_series;
+    const agent = new WebhookClient({ request, response });
+    // console.log('Dialogflow Request headers: ' + JSON.stringify(request.headers));
+    // console.log('Dialogflow Request body: ' + JSON.stringify(request.body));
 
-    let response = "";
-    
-    if (selectedModel) {
-      console.log('selectedModel');
-      response = createModelResponse(selectedModel);
-
-    } else if (selectedSeries) {
-      console.log('selectedSeries');
-      response = createSerieResponse(selectedSeries);
- 
-    } else {
-      response = {
-        "fulfillmentText": "Webhook : Select a BMW model please"
+    function Model_info(agent) {
+      console.log('Intent: Model_info --- \n');
+      let requiredParam = agent.parameters.BMW_models;
+      if (requiredParam) {
+        createBMWModelResponse(agent,requiredParam)
+      } else {
+        agent.add(`Webhook : Select a BMW model please`);
       }
     }
 
-    return res.ok(response);
+    function Series_info(agent) {
+      console.log('Intent: Series_info --- \n');
+      let requiredParam = agent.parameters.BMW_series;
+      if (requiredParam) {
+        createSerieResponse(agent,requiredParam)
+      } else {
+        agent.add(`Webhook : Select a BMW series please`);
+      }
+    }
+
+    //Action Mapping
+    const actionMap = new Map();
+    actionMap.set('Model_info', Model_info);
+    actionMap.set('Series_info', Series_info);
+    agent.handleRequest(actionMap);
 
   },
 
-  list: function(req, res){
+  list: function (req, res) {
     let response = {
       models: ModelsService.getModels()
     }
     return res.ok(response);
-
   }
 
 };
