@@ -40,7 +40,7 @@ module.exports.routes = {
   //  ╠═╣╠═╝║  ║╣ ║║║ ║║╠═╝║ ║║║║║ ║ ╚═╗
   //  ╩ ╩╩  ╩  ╚═╝╝╚╝═╩╝╩  ╚═╝╩╝╚╝ ╩ ╚═╝
 
-  'post /api/bmwmodels': 'BMWModelsController.list',
+  'post /api/bmwmodels': 'BMWModelsController.search',
   'get /api/bmwmodels': 'BMWModelsController.list',
 
   //  ╦ ╦╔═╗╔╗ ╦ ╦╔═╗╔═╗╦╔═╔═╗

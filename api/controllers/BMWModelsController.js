@@ -2,15 +2,11 @@ var chance = require('chance').Chance();
 var _ = require('lodash');
 
 
-
-function createCard(modelId) {
-  let model = ModelsService.getModel(modelId);
-  // console.log("--->" + JSON.stringify(model));
-
+function createCard(model) {
   return {
     "card": {
       "title": model.model_name,
-      "subtitle": model.model_series,
+      "subtitle": model.model_series_name,
       "imageUri": model.model_img_url,
       "buttons": [
         {
@@ -20,48 +16,83 @@ function createCard(modelId) {
       ]
     }
   }
-
-
-  //TO-DO:  add logic to show all models of a specific serie
-  
 }
 
+function getModel(modelId) {
+  let model = ModelsService.getModel(modelId);
+  return model;
+}
+
+function getSerie(seriesId) {
+  let series = ModelsService.getSerie(seriesId);
+  return series;
+}
+
+function createSerieResponse(selectedSeries) {
+  let series = getSerie(selectedSeries);
+  let response = {
+    "fulfillmentText": "Series not found - try to repeat please"
+  };
+    
+  if (series) {
+    response = {
+      "fulfillmentText": "you selected " + series.series_name + ".These are availables models: " + series.series_models.toString()
+    }
+  }
+  return response;
+}
+
+function createModelResponse(modelId) {
+
+  let model = getModel(modelId);
+  let response = {
+    "fulfillmentText": "Model not found - try to repeat please"
+  };
+
+  if (model) {
+    response = {
+  "fulfillmentText": "This is a text response",
+        "fulfillmentMessages": [
+          createCard(model)
+        ]
+    }
+  }
+
+  return response;
+}
 module.exports = {
 
-  list: function (req, res) {
+  search: function (req, res) {
 
     var selectedModel = req.body.queryResult.parameters.BMW_models;
+    var selectedSeries = req.body.queryResult.parameters.BMW_series;
 
-    console.log(selectedModel[0]);
-
+    let response = "";
+    
     if (selectedModel) {
+      console.log('selectedModel');
+      response = createModelResponse(selectedModel);
 
-      var response =
-
-        {
-          "fulfillmentText": "Info about your selection",
-          "fulfillmentMessages": [
-            createCard(selectedModel[0])
-          ]
-        }
+    } else if (selectedSeries) {
+      console.log('selectedSeries');
+      response = createSerieResponse(selectedSeries);
+ 
     } else {
-      var response = {
+      response = {
         "fulfillmentText": "Webhook : Select a BMW model please"
       }
     }
-
 
     return res.ok(response);
 
   },
 
-  getDetails: function (req, res) {
-    var temp = ModelsService.getUser(req.param('id'));
-    var response =
-      {
-
-      }
+  list: function(req, res){
+    let response = {
+      models: ModelsService.getModels()
+    }
     return res.ok(response);
+
   }
 
 };
