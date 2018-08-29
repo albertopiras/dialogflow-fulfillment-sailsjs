@@ -1,9 +1,9 @@
 {
-  "name": "sailsapp",
+  "name": "dialogflow-webhook-bmw-models-sailsjs",
   "private": true,
   "version": "0.0.0",
-  "description": "a Sails application",
-  "keywords": [],
+  "description": "Webhook & sailsJS example",
+  "keywords": ["dialogflow", "api.ai"],
   "dependencies": {
     "@sailshq/connect-redis": "^3.2.1",
     "@sailshq/lodash": "^3.10.3",
@@ -31,9 +31,9 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/anonymous node/sails user/sailsapp.git"
+    "url": "https://github.com/albertopiras/dialogflow-webhook-bmw-models-sailsjs.git"
   },
-  "author": "anonymous node/sails user",
+  "author": "Alberto Piras a.piras.ict@gmail.com",
   "license": "",
   "engines": {
     "node": ">=8.11"
