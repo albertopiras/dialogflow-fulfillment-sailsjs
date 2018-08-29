@@ -3,13 +3,14 @@
 
 This webhook will provide info about BMW cars models.
 
-This webhook service is built with Google [dialogflof-fulfillment] library  and with [SailsJS]
+This webhook service is built with Google [dialogflow-fulfillment] library  and with [SailsJS]
 
 ## Setup
 
 * Sign up for or sign into Dialogflow and create a agent
 * Go to your agent's settings and Restore from zip using the dialogflow-agent.zip in this directory (Note: this will overwrite your existing agent)
 * Then go to fulfillment and insert the following Webhook URL: `https://webhook-bmw-models.herokuapp.com/api/bmwmodels`
+* input something like "I want info about The BMW 6 Series Gran Turismo" or "give me info about The BMW 3 Series"
 
 ## Test it locally - & how to Boost your development speed
 
@@ -60,7 +61,7 @@ MIT
 [SailsJS]: <https://sailsjs.com>
 [heroku]:<https://www.heroku.com>
 [ngrok]: <https://ngrok.com/>
-[dialogflow-fulfillment]: <https://github.com/dialogflow/dialogflow-fulfillment-nodejsfulfillment>
+[dialogflow-fulfillment]: <https://github.com/dialogflow/dialogflow-fulfillment-nodejs>
 
 
 
