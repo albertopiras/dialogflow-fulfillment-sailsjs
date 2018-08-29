@@ -36,7 +36,7 @@ open another terminal and intall & execute ngrok
 
 (the port is the same of the SailsJS process )
 
-You will obtain an univoque address like "http://code_alphanumeric.ngrok.io" that will point to your local server instance, this will save you a lot of time.
+You will obtain an univocal address like "http://code_alphanumeric.ngrok.io" that will point to your local server instance, this will save you a lot of time.
 
 
 Copy the nkrok address (http://code_alphanumeric.ngrok.io/api/bmwmodels) and use it in your dialogflow Fulfillment/Webhook section.
