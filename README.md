@@ -9,7 +9,7 @@ This webhook service is built with Google [dialogflof-fulfillment] library  and 
 
 * Sign up for or sign into Dialogflow and create a agent
 * Go to your agent's settings and Restore from zip using the dialogflow-agent.zip in this directory (Note: this will overwrite your existing agent)
-* Then go to fulfillment and insert the following Webhook URL:  http:test123.com/
+* Then go to fulfillment and insert the following Webhook URL: `https://webhook-bmw-models.herokuapp.com/api/bmwmodels`
 
 ## Test it locally - & how to Boost your development speed
 
