@@ -16,7 +16,7 @@ This webhook service is built with Google [dialogflow-fulfillment] library  and 
 
 run SailsJS with
 
-    $ node app.js.
+    $ node app.js
 
 Your service will be available on http://localhost:1337
 
